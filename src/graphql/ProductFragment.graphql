@@ -7,6 +7,7 @@ fragment ProductFragment on Product {
   description
   handle
   productType
+  tags
   title
   vendor
   publishedAt
