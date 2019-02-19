@@ -7,6 +7,7 @@ import collectionNodeQuery from './graphql/collectionNodeQuery.graphql';
 import collectionNodeWithProductsQuery from './graphql/collectionNodeWithProductsQuery.graphql';
 import collectionConnectionQuery from './graphql/collectionConnectionQuery.graphql';
 import collectionConnectionWithProductsQuery from './graphql/collectionConnectionWithProductsQuery.graphql';
+import collectionNodeWithProductsExtendedQuery from './graphql/collectionNodeWithProductsExtendedQuery.graphql';
 import collectionByHandleQuery from './graphql/collectionByHandleQuery.graphql';
 
 /**
@@ -80,9 +81,38 @@ class CollectionResource extends Resource {
    */
   fetchWithProducts(id) {
     return this.graphQLClient
-      .send(collectionNodeWithProductsQuery, {id})
-      .then(defaultResolver('node'))
-      .then(paginateCollectionsProductConnectionsAndResolve(this.graphQLClient));
+               .send(collectionNodeWithProductsQuery, {id})
+               .then(defaultResolver('node'))
+               .then(paginateCollectionsProductConnectionsAndResolve(this.graphQLClient));
+  }
+
+  /**
+   * Fetches a single collection by ID on the shop, including products, sorted and/or filtered by query data.
+   *
+   * @example
+   * client.collection.fetchWithProducts({
+     id: 'Xk9lM2JkNzFmNzIQ4NTIY4ZDFiZTUyZTUwNTE2MDNhZjg=='
+     sortKey: 'RELEVANCE'
+     }).then((collection) => {
+   *   // Do something with the collection
+   * });
+
+   * @param {Object} [args] An object specifying the query data containing zero or more of:
+   *  @param {String} id The id of the collection to fetch.
+   *   @param {Int} [args.first=20] The relay `first` param. This specifies page size for products.
+   *   @param {String} [args.sortKey=COLLECTION_DEFAULT] The key to sort results by. Available values are
+   *   documented as {@link https://help.shopify.com/api/storefront-api/reference/enum/productcollectionsortkeys|Product Collection Sort Keys}.
+   *   @param {Boolean} [args.reverse] Whether or not to reverse the sort order of the results
+   * @return {Promise|GraphModel[]} A promise resolving with an array of `GraphModel`s of the collections.
+   *
+   * 
+   * @return {Promise|GraphModel} A promise resolving with a `GraphModel` of the collection.
+   */
+  fetchWithProductsExtended({id, first = 20, sortKey = 'COLLECTION_DEFAULT', query, reverse}) {
+    return this.graphQLClient
+               .send(collectionNodeWithProductsExtendedQuery, {id, sortKey, first, reverse})
+               .then(defaultResolver('node'))
+               .then(paginateCollectionsProductConnectionsAndResolve(this.graphQLClient));
   }
 
   /**
