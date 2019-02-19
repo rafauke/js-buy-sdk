@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.0.3 (February 19, 2019)
+- Add method for fetching collection with products that give more flexibilty
+
 ### v2.0.2 (February 18, 2019)
 - Add tags to ProductFragment
 
