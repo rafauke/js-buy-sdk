@@ -1,0 +1,24 @@
+query(
+  $id: ID!,
+  $sortKey: ProductCollectionSortKeys = COLLECTION_DEFAULT,
+  $first: Int!,
+  $reverse: Boolean
+) {
+  node(id: $id) {
+    ...CollectionFragment
+    ... on Collection {
+      products(first: $first, sortKey: $sortKey, reverse: $reverse) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          cursor
+          node {
+            ...ProductFragment
+          }
+        }
+      }
+    }
+  }
+}
